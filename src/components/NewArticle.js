@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ArticleContext from "../context/article/ArticleContext";
 
@@ -6,11 +6,18 @@ export default function NewArticle() {
   const context = useContext(ArticleContext);
   //   console.log("This is ", context);
 
+  const [addAlert, setAddAlert] = useState("");
   const navigate = useNavigate();
   const { checkAuthentic } = context;
-  if (!checkAuthentic()) {
-    navigate("/login");
-  }
+  useEffect(() => {
+    checkAuthentic().then((success) => {
+      console.log(success);
+      if (!success) {
+        console.log("not authenticated");
+        navigate("/login");
+      }
+    });
+  }, []);
 
   const [data, setData] = React.useState({
     newTitle: "",
@@ -41,11 +48,34 @@ export default function NewArticle() {
     console.log(json);
 
     if (json.success) {
-      // localStorage.setItem("authtoken", json.authtoken);
-      alert("Successfully Added");
-      navigate("/");
+      setAddAlert(
+        <div class="alert alert-success my-3" role="alert">
+          <b>Successfully Added</b>
+        </div>
+      );
+      setTimeout(() => {
+        setAddAlert("");
+        navigate("/");
+      }, 1500);
+    } else if (json.invalidEntry) {
+      setAddAlert(
+        <div class="alert alert-danger my-3" role="alert">
+          <b>Invalid Entries: Enter minimum 3 character</b>
+        </div>
+      );
+      setTimeout(() => {
+        setAddAlert("");
+      }, 1500);
     } else {
-      alert("Some Error Occured");
+      setAddAlert(
+        <div class="alert alert-danger my-3" role="alert">
+          <b>Internal Server Error</b>
+        </div>
+      );
+      setTimeout(() => {
+        setAddAlert("");
+      }, 1500);
+      // alert("Some Error Occured");
     }
   };
 
@@ -58,6 +88,8 @@ export default function NewArticle() {
   return (
     <>
       <div className="container">
+        {addAlert}
+        <h1 className="text-center pageHeading my-4">Add New Articles</h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label htmlFor="newTitle" className="form-label my-3">
@@ -79,7 +111,7 @@ export default function NewArticle() {
               name="newArticleText"
               className="form-control"
               id="newArticleText"
-              rows={3}
+              rows={7}
               onChange={onChange}
             ></textarea>
 

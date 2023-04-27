@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ArticleContext from "../context/article/ArticleContext";
 
@@ -7,7 +7,6 @@ export default function Navbar() {
   const { getUser, uname } = context;
   const navigate = useNavigate();
   let myArticlePath = `/myArticle/${uname}`;
-  let token = localStorage.getItem("authtoken");
   useEffect(() => {
     getUser();
   }, [localStorage.getItem("authtoken")]);
@@ -25,18 +24,19 @@ export default function Navbar() {
   };
   return (
     <>
-      {/* Navbar */}
-      <nav className="navbar bg-body-tertiary">
+      {/* Navbar  bg-body-tertiary */}
+      <nav className="navbar navbar-dark  bg-dark">
         <div className="container-fluid">
-          <div className="navbar-brand navText" onClick={toHome}>
-            My Article
+          <div className="navbar-brand navText mx-4" onClick={toHome}>
+            myArticle
           </div>
-          <div className="dropdown mx-5">
+          <div className="dropdown mx-5 my-3 ml-5">
             <button
               className="btn btn-danger dropdown-toggle"
               type="button"
               data-bs-toggle="dropdown"
               aria-expanded="false"
+              style={{ fontSize: "18px", fontWeight: "600" }}
             >
               {uname}
             </button>

@@ -9,7 +9,7 @@ const fetchUser = require("../middleware/fetchuser");
 const JWT_SECRET = "ThisisJWTsecretKey$";
 
 router.get("/", (req, res) => {
-  res.send("Login");
+  res.send("Auth Page");
 });
 
 //Route 1: To CREATE USER : POST :- localhost:5000/auth/createuser
@@ -24,13 +24,11 @@ router.post(
     let success = false;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          errors: errors.array(),
-          msg: "Invalid Entries",
-        });
+      return res.status(400).json({
+        success: false,
+        errors: errors.array(),
+        invalidEntry: true,
+      });
     }
 
     let user = await User.findOne({ email: req.body.email });
@@ -38,9 +36,11 @@ router.post(
     // console.log(user);
 
     if (user) {
-      return res
-        .status(400)
-        .send({ success: false, msg: "User with this email already Exits" });
+      return res.status(400).send({
+        success: false,
+        msg: "User with this email already Exits",
+        mailUsed: true,
+      });
     }
 
     try {
@@ -102,9 +102,12 @@ router.post(
         });
       }
 
+      let username = user.email.split("@")[0];
       const data = {
         user: {
           id: user.id,
+          uname: username,
+          authName: user.name,
         },
       };
       const authtoken = jwt.sign(data, JWT_SECRET);
@@ -112,7 +115,7 @@ router.post(
       res.json({ success, authtoken });
     } catch (error) {
       console.error(error.message);
-      res.status(500).send("Internal Server Error");
+      res.status(500).send({ success, msg: "Internal Server Error" });
     }
   }
 );
@@ -120,10 +123,10 @@ router.post(
 router.get("/getUser", fetchUser, async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.user.id });
-    res.json(user);
+    res.json({ success: true, user });
   } catch (error) {
     console.error(error.message);
-    res.status(500).send(null);
+    res.status(500).send({ success: false, user: null });
   }
 });
 

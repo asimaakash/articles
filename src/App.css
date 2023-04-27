@@ -1,6 +1,29 @@
 body{
-  background-color: rgb(52, 59, 55);
+  background-color: rgb(252, 245, 174);
 }
+
+label{
+  font-size: 18px;
+  font-weight: 600;
+}
+
+i{
+  /* font-size: 40px; */
+}
+/* Login.js Signup.js */
+
+.formAuth{
+  background-color: rgb(237, 227, 191);
+  padding: 6px;
+  margin-bottom: 10px;
+}
+
+.formInput{
+ margin: 0 auto;
+}
+
+/* SearchBy.js */
+
 .searchCont{
   width: 100%;
   display: flex;
@@ -16,12 +39,21 @@ body{
   padding: 5px;
  }
 
+
+ .pageHeading{
+  color: rgb(32, 22, 240);
+  font-weight: 700;
+ }
  .navText{
   cursor: pointer;
+  font-weight: 600;
+  font-size: 23px;
  }
 
  .articleText{
   font-size: 19px;
+  color: black;
+  font-weight: 400;
  }
 
  .buttonLink > {
@@ -35,19 +67,51 @@ body{
 
  .buttonSt{
   font-size: 18px;
+  font-weight: 600;
  }
 
  .myCard{
-  background-color: rgb(240, 192, 108);
+  background-color: rgb(253, 255 ,129);
  }
 
  .cardTitle{
   color: red;
-  font-size: larger;
+  font-size: 28px;
   font-weight: 700;
+ }
+
+ .cardText{
+  color: black;
+  font-size: 16px;
+  font-weight: 500;
+  min-height: 120px;
  }
 
  .authName{
   font-size: 20px;
   font-weight: 600;
  }
+
+ .likeIcon{
+  cursor: pointer;
+  font-size: 33px;
+ }
+
+ .likeText{
+  font-size: 30px;
+  font-weight: 600;
+  margin-left: 7px;
+ }
+ 
+ /* .footer{
+position: fixed;
+  position: sticky;
+   bottom: 0;
+   width: 100%;
+   background-color: black;
+   font-size: 20px;
+   color: white;
+   text-align: center;
+   padding: 15px 0px;
+   font-weight: 600;
+ } */

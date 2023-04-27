@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import ArticleContext from "./ArticleContext";
 
 const ArticleState = (props) => {
@@ -14,6 +13,7 @@ const ArticleState = (props) => {
   // const [isLogged,setIsLogged] = useState(false);
   const [isAuthentic, setIsAuthentic] = useState(false);
   const [search, setSearch] = useState({ text: "", by: "heading" });
+  const [articleLikes, setArticleLikes] = useState([]);
 
   const getAllArticle = async () => {
     const response = await fetch(`${host}/api/allArticle`, {
@@ -71,10 +71,12 @@ const ArticleState = (props) => {
       },
     });
     const json = await response.json();
-    let name = json.email.split("@")[0];
+    // console.log(json);
+
+    let name = json.user.email.split("@")[0];
     // console.log(name);
     setUname(name);
-    setuser(json);
+    setuser(json.user);
     // return uname;
   };
 
@@ -92,6 +94,53 @@ const ArticleState = (props) => {
     // console.log("JSON ", json);
     if (json.success) {
       setSingleArticle(json.article);
+    } else {
+      setSingleArticle({});
+    }
+  };
+
+  const getArticleLikes = async (articleId) => {
+    // console.log(JSON.stringify({ id }));
+
+    const response = await fetch(`${host}/api/like/getLikes`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ articleId }),
+    });
+    const json = await response.json();
+    // console.log("JSON ", json);
+    if (json.success) {
+      setArticleLikes(json.articleLikes);
+      let isLiked = json.articleLikes.includes(uname);
+      return { isLiked, num: json.articleLikes.length };
+    } else {
+      setArticleLikes([]);
+      return { isLiked: false, num: 0 };
+    }
+  };
+
+  const addRemLikes = async (articleId) => {
+    // console.log(JSON.stringify({ id }));
+
+    const response = await fetch(`${host}/api/like/addRemLike`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ articleId, uname }),
+    });
+    const json = await response.json();
+    // console.log("JSON ", json);
+    let isLiked = json.articleLikes.includes(uname);
+
+    if (json.success) {
+      setArticleLikes(json.articleLikes);
+      return { isLiked, num: json.articleLikes.length };
+    } else {
+      setArticleLikes([]);
+      return { isLiked: false, num: 0 };
     }
   };
 
@@ -116,9 +165,10 @@ const ArticleState = (props) => {
   const checkAuthentic = async () => {
     if (localStorage.getItem("authtoken").length === 0) {
       setIsAuthentic(false);
-      return;
+      console.log("returned from here");
+      return false;
     }
-    const response = await fetch(`${host}/auth/getUser`, {
+    const response = await fetch(`${host}/auth/isAuthentic`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -129,6 +179,8 @@ const ArticleState = (props) => {
     // const navigate = useNavigate();
     // console.log(json);
     // setIsAuthentic(json.success);
+    console.log("returned after api ", json);
+
     return json.success;
   };
 
@@ -138,6 +190,7 @@ const ArticleState = (props) => {
         allArticle,
         getAllArticle,
         getUser,
+        setUname,
         user,
         uname,
         getUserArticle,
@@ -146,6 +199,9 @@ const ArticleState = (props) => {
         singleArticle,
         deleteArticle,
         searchArticles,
+        articleLikes,
+        getArticleLikes,
+        addRemLikes,
         search,
         setSearch,
         checkAuthentic,

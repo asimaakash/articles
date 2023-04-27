@@ -20,9 +20,11 @@ const AllCards = () => {
     console.log(search);
 
     cards = searchedArticle.map((article) => (
-      <div className="col col-lg-auto col-md-auto col-sm-auto">
+      <div
+        key={article._id}
+        className="col col-lg-auto col-md-auto col-sm-auto"
+      >
         <Card
-          key={article._id}
           title={article.title}
           aText={article.aText}
           id={article._id}
@@ -40,7 +42,12 @@ const AllCards = () => {
     );
   }, [search, allArticle.length]);
 
-  return <>{cardEle}</>;
+  return (
+    <>
+      <h1 className="text-center pageHeading mb-4">All Articles</h1>
+      {cardEle}
+    </>
+  );
 };
 
 export default AllCards;

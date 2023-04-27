@@ -5,6 +5,7 @@ import Card from "./Card";
 
 const MyArticles = () => {
   const context = useContext(ArticleContext);
+  const [loading, setLoading] = useState(true);
   const {
     getUserArticle,
     userArticle,
@@ -16,11 +17,16 @@ const MyArticles = () => {
 
   const navigate = useNavigate();
 
-  //   if (!checkAuthentic()) {
-  //     console.log(checkAuthentic());
-
-  //     navigate("/login");
-  //   }
+  useEffect(() => {
+    checkAuthentic().then((success) => {
+      setLoading(false);
+      console.log(success);
+      if (!success) {
+        console.log("not authenticated");
+        navigate("/login");
+      }
+    });
+  }, []);
 
   const [cardEle, setCardEle] = useState([]);
   //   let cardEle = [];
@@ -34,9 +40,11 @@ const MyArticles = () => {
     let cards = [];
     if (searchedArticles.length) {
       cards = searchedArticles.map((article) => (
-        <div className="col col-lg-auto col-md-auto col-sm-auto">
+        <div
+          key={article._id}
+          className="col col-lg-auto col-md-auto col-sm-auto"
+        >
           <Card
-            key={article._id}
             title={article.title}
             aText={article.aText}
             id={article._id}
@@ -60,20 +68,29 @@ const MyArticles = () => {
     // );
   }, [search, userArticle.length]);
 
-  return userArticle.length === 0 ? (
+  return loading ? (
+    <div className="container">
+      <h1 className="text-center">Loading..</h1>
+    </div>
+  ) : userArticle.length === 0 ? (
     <div className="container">
       <h1 className="text-center">No Article To display</h1>
     </div>
   ) : (
-    <>
-      <div className="container">
-        <h1 className="text-center" style={{ color: "white" }}>
-          Your Articles
-        </h1>
-        {cardEle}
-      </div>
-    </>
+    <div className="container">
+      <h1 className="text-center pageHeading">Your Articles</h1>
+      {cardEle}
+    </div>
   );
+
+  //     userArticle.length === 0 ? (
+
+  //   ) : (
+  //     <>
+
+  //     </>
+  //   );
+  //   }
 };
 
 export default MyArticles;

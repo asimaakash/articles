@@ -6,15 +6,17 @@ export default function Card(props) {
   return (
     <>
       <div className="col my-3">
-        <div className="card myCard" style={{ width: "22rem" }}>
+        <div className="card myCard" style={{ width: "25rem" }}>
           <div className="card-body min-vh-30">
             <h5 className="card-title text-center cardTitle">{props.title}</h5>
-            <p className="card-text mt-3">{props.aText.slice(0, 150)}</p>
+            <p className="card-text mt-3 cardText">
+              {props.aText.slice(0, 220)}
+            </p>
             <p className="text-center mt-4">
               Author's Name : <b>{props.authname}</b>
             </p>
             <p className="text-center mt-4">
-              <Link to={props.url} className="btn btn-success">
+              <Link to={props.url} className="btn btn-success buttonSt">
                 View
               </Link>
             </p>

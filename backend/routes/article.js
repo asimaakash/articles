@@ -3,6 +3,7 @@ const router = express.Router();
 // const mongoose = require("mongoose");
 const Article = require("../models/Article");
 const User = require("../models/User");
+const Like = require("../models/Like");
 const { body, validationResult } = require("express-validator");
 // const jwt = require("jsonwebtoken");
 const fetchUser = require("../middleware/fetchuser");
@@ -19,9 +20,11 @@ router.post(
     let success = false;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res
-        .status(400)
-        .json({ errors: errors.array(), msg: "Invalid Entries" });
+      return res.status(400).json({
+        success: false,
+        errors: errors.array(),
+        invalidEntry: true,
+      });
     }
     const userId = req.user.id;
     if (!userId) {
@@ -40,8 +43,12 @@ router.post(
         uid: userId,
         authName: user.name,
       });
+
+      const aLike = await Like.create({
+        articleId: article._id,
+      });
       success = true;
-      res.send({ success });
+      res.send({ success, article });
     } catch (error) {
       console.error(error.message);
       res.status(500).send({ msg: "Internal Server Error", success: false });
@@ -94,6 +101,9 @@ router.delete("/deleteOne", fetchUser, async (req, res) => {
     // { userId: req.user.id, uid: findArt.uid }
     // success: false, msg: "UnAuthorised To delete"
     const delArt = await Article.findByIdAndDelete(req.body.id);
+    const delLikeArticle = await Like.findOneAndDelete({
+      articleId: req.body.id,
+    });
     res.send({ success: true, article: delArt });
   } catch (error) {
     console.error(error.message);

@@ -1,5 +1,4 @@
 import "./App.css";
-import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AllCards from "./components/AllCards";
 import NewArticle from "./components/NewArticle";
@@ -15,38 +14,43 @@ import MySingleArticle from "./components/MySingleArticle";
 
 function App() {
   return (
-    <>
+    <div className="App">
       <ArticleState>
-        <div className="App">
-          <Router>
-            <Routes>
-              <Route
-                path="/"
-                element={[<Navbar />, <SearchBy />, <AllCards />]}
-              />
-              {/* <Route path="/" element={<SearchBy />} /> */}
-              {/* <Route path="/" element={cards} /> */}
-              <Route path="addArticle" element={[<Navbar />, <NewArticle />]} />
-              <Route path="login" element={<Login />} />
-              <Route path="signup" element={<Signup />} />
-              <Route
-                path="myArticle/:uname"
-                element={[<Navbar />, <SearchBy />, <MyArticles />]}
-              />
-              <Route
-                path="myArticle/:uname/:singleArticleId"
-                element={[<Navbar />, <MySingleArticle />]}
-              />
-              <Route
-                path=":singleArticleId"
-                element={[<Navbar />, <SingleArticle />]}
-              />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Router>
-        </div>
+        <Router>
+          <Routes>
+            <Route
+              path="/"
+              key={"home_page"}
+              element={[<Navbar />, <SearchBy />, <AllCards />]}
+            />
+
+            <Route
+              key={"addArticle"}
+              path="addArticle"
+              element={[<Navbar />, <NewArticle />]}
+            />
+            <Route index key={"login"} path="login" element={<Login />} />
+            <Route key={"signup"} path="signup" element={<Signup />} />
+            <Route
+              key={"myArticle"}
+              path="myArticle/:uname"
+              element={[<Navbar />, <SearchBy />, <MyArticles />]}
+            />
+            <Route
+              key={"singleArticle"}
+              path="myArticle/:uname/:singleArticleId"
+              element={[<Navbar />, <MySingleArticle />]}
+            />
+            <Route
+              key={"singleArticleId"}
+              path=":singleArticleId"
+              element={[<Navbar />, <SingleArticle />]}
+            />
+            <Route key={"notfound"} path="*" element={[<NotFound />]} />
+          </Routes>
+        </Router>
       </ArticleState>
-    </>
+    </div>
   );
 }
 

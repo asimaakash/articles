@@ -21,6 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/auth", require("./routes/auth"));
 app.use("/api", require("./routes/article"));
+app.use("/api/like", require("./routes/likeArticle"));
 
 app.get("/", (req, res) => {
   res.send("Hello");

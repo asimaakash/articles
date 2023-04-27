@@ -1,7 +1,12 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import ArticleContext from "../context/article/ArticleContext";
 
 export const Signup = () => {
+  const context = useContext(ArticleContext);
+  const { getUser, setUname } = context;
+  const [addAlert, setAddAlert] = useState("");
+
   const [credentials, setcredentials] = React.useState({
     sname: "",
     semail: "",
@@ -13,7 +18,30 @@ export const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (credentials.spassword !== credentials.cpassword) {
-      alert("Password and C-Password donot match.");
+      setAddAlert(
+        <div class="alert alert-danger my-3" role="alert">
+          <b>Password and C-Password donot match.</b>
+        </div>
+      );
+      setTimeout(() => {
+        setAddAlert("");
+      }, 1500);
+      // alert("Password and C-Password donot match.");
+      return;
+    }
+
+    let mail = credentials.semail;
+    mail = mail.split("@");
+    if (mail[0].length === 0 || mail[1] !== "gmail.com") {
+      setAddAlert(
+        <div class="alert alert-danger my-3" role="alert">
+          <b>Please use gmail account to signup!</b>
+        </div>
+      );
+      setTimeout(() => {
+        setAddAlert("");
+      }, 3500);
+      // alert("Password and C-Password donot match.");
       return;
     }
 
@@ -32,10 +60,47 @@ export const Signup = () => {
     // console.log(json);
 
     if (json.success) {
+      let username = credentials.semail.split("@")[0];
+      setUname(username);
       localStorage.setItem("authtoken", json.authtoken);
-      navigate("/");
+      getUser();
+      setAddAlert(
+        <div class="alert alert-success my-3" role="alert">
+          <b>Welcome {username}</b>
+        </div>
+      );
+      setTimeout(() => {
+        setAddAlert("");
+        navigate("/");
+      }, 1500);
+    } else if (json.invalidEntry) {
+      setAddAlert(
+        <div class="alert alert-danger my-3" role="alert">
+          <b>Invalid Entry: Min length of name and password must be 3 and 5</b>
+        </div>
+      );
+      setTimeout(() => {
+        setAddAlert("");
+      }, 4500);
+      // alert("This email has been already used, Try Another!");
+    } else if (json.mailUsed) {
+      setAddAlert(
+        <div class="alert alert-danger my-3" role="alert">
+          <b>This mail has been used try another!</b>
+        </div>
+      );
+      setTimeout(() => {
+        setAddAlert("");
+      }, 2500);
     } else {
-      alert("This email has been already used, Try Another!");
+      setAddAlert(
+        <div class="alert alert-danger my-3" role="alert">
+          <b>Internal Server Error! Try Again Later</b>
+        </div>
+      );
+      setTimeout(() => {
+        setAddAlert("");
+      }, 1500);
     }
   };
 
@@ -47,14 +112,11 @@ export const Signup = () => {
   return (
     <>
       <div className="container">
-        <h1 className="my-3 text-center" style={{ color: "white" }}>
-          Welcome To myArticle Signup Page
-        </h1>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group mt-5">
-            <label htmlFor="sname" style={{ color: "white" }}>
-              Email Name :-{" "}
-            </label>
+        {addAlert}
+        <h1 className="my-5 text-center">Signup using Gmail Account</h1>
+        <form onSubmit={handleSubmit} className="formAuth">
+          <div className="form-group mt-5 col-lg-4 formInput">
+            <label htmlFor="sname">Enter Name :- </label>
             <input
               type="text"
               className="form-control my-1"
@@ -66,10 +128,8 @@ export const Signup = () => {
               placeholder="Enter Name"
             />
           </div>
-          <div className="form-group my-3">
-            <label htmlFor="semail" style={{ color: "white" }}>
-              Email Address :-{" "}
-            </label>
+          <div className="form-group my-3 mt-4 col-lg-4 formInput">
+            <label htmlFor="semail">Email Address :- </label>
             <input
               type="email"
               className="form-control my-1"
@@ -81,10 +141,8 @@ export const Signup = () => {
               placeholder="Enter email"
             />
           </div>
-          <div className="form-group my-3">
-            <label htmlFor="spassword" style={{ color: "white" }}>
-              Password :-
-            </label>
+          <div className="form-group my-3 mt-4 col-lg-4 formInput">
+            <label htmlFor="spassword">Password :-</label>
             <input
               type="password"
               className="form-control my-1"
@@ -95,10 +153,8 @@ export const Signup = () => {
               placeholder="Password"
             />
           </div>
-          <div className="form-group my-3">
-            <label htmlFor="cpassword" style={{ color: "white" }}>
-              Confirm Password :-
-            </label>
+          <div className="form-group my-3 mt-4 col-lg-4 formInput">
+            <label htmlFor="cpassword">Confirm Password :-</label>
             <input
               type="password"
               className="form-control my-1"
@@ -109,21 +165,16 @@ export const Signup = () => {
               placeholder="Confirm Password"
             />
           </div>
-          <p className="text-center mt-5">
+          <p className="text-center mt-4">
             <button type="submit" className="btn btn-primary my-3 buttonSt">
               Sign Up
             </button>
           </p>
         </form>
-        <p className="text-center">
-          <button type="button" class="btn btn-success buttonSt">
-            <Link
-              style={{ textDecoration: "none", color: "white" }}
-              to={`/login`}
-            >
-              Login
-            </Link>
-          </button>
+        <p className="text-center my-3 mb-5">
+          <Link style={{ color: "blue", fontSize: "18px" }} to={`/login`}>
+            Go to Login
+          </Link>
         </p>
       </div>
     </>

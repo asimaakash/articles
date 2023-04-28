@@ -77,7 +77,7 @@ export const Login = () => {
       <div className="container">
         {addAlert}
         <h1 className="my-5 text-center" style={{ color: "black" }}>
-          Welcome To myArticle Login Page
+          Welcome To Content Management System's Login Page
         </h1>
         <form onSubmit={handleSubmit} className="formAuth">
           <div className="form-group mt-5 col-lg-4 formInput">

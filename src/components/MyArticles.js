@@ -31,15 +31,10 @@ const MyArticles = () => {
   const [cardEle, setCardEle] = useState([]);
   //   let cardEle = [];
 
-  useEffect(() => {
-    getUserArticle();
-    // checkAuthentic();
-    // console.log("Called jere");
-
-    let searchedArticles = searchArticles(userArticle);
+  function showUserArticle(articleArr) {
     let cards = [];
-    if (searchedArticles.length) {
-      cards = searchedArticles.map((article) => (
+    if (articleArr.length) {
+      cards = articleArr.map((article) => (
         <div
           key={article._id}
           className="col col-lg-auto col-md-auto col-sm-auto"
@@ -54,19 +49,25 @@ const MyArticles = () => {
         </div>
       ));
     }
-    // console.log(allArticle);
 
     setCardEle(
       <div className="container">
         <div className="row">{cards}</div>
       </div>
     );
-    // cardEle = (
-    //   <div className="container">
-    //     <div className="row">{cards}</div>
-    //   </div>
-    // );
-  }, [search, userArticle.length]);
+  }
+
+  useEffect(() => {
+    getUserArticle();
+    const getArt = async () => {
+      const allArticles = await getUserArticle();
+
+      let searchedArticles = searchArticles(allArticles);
+      showUserArticle(searchedArticles);
+    };
+
+    getArt();
+  }, [search]);
 
   return loading ? (
     <div className="container">
@@ -82,15 +83,6 @@ const MyArticles = () => {
       {cardEle}
     </div>
   );
-
-  //     userArticle.length === 0 ? (
-
-  //   ) : (
-  //     <>
-
-  //     </>
-  //   );
-  //   }
 };
 
 export default MyArticles;

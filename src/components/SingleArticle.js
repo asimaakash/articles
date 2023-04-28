@@ -51,7 +51,7 @@ const SingleArticle = () => {
 
   useEffect(() => {
     getArticleLikes(singleArticleId).then((data) => {
-      // console.log(data);
+      console.log(data);
 
       setRetLike(data);
     });

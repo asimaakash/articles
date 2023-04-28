@@ -10,7 +10,6 @@ const ArticleState = (props) => {
   const [uname, setUname] = useState("username");
   const [userArticle, setUserArticle] = useState([]);
   const [singleArticle, setSingleArticle] = useState({});
-  // const [isLogged,setIsLogged] = useState(false);
   const [isAuthentic, setIsAuthentic] = useState(false);
   const [search, setSearch] = useState({ text: "", by: "heading" });
   const [articleLikes, setArticleLikes] = useState([]);
@@ -53,12 +52,15 @@ const ArticleState = (props) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "auth-token": authtoken,
+        "auth-token": localStorage.getItem("authtoken"),
       },
     });
     const json = await response.json();
     if (json.success) {
+      // console.log("Article State :- ", json.allUserArticle);
+
       setUserArticle(json.allUserArticle);
+      return json.allUserArticle;
     }
   };
 
@@ -77,7 +79,7 @@ const ArticleState = (props) => {
     // console.log(name);
     setUname(name);
     setuser(json.user);
-    // return uname;
+    return name;
   };
 
   const getSingleArticle = async (id) => {
@@ -111,9 +113,12 @@ const ArticleState = (props) => {
     });
     const json = await response.json();
     // console.log("JSON ", json);
+    const username = await getUser();
     if (json.success) {
       setArticleLikes(json.articleLikes);
-      let isLiked = json.articleLikes.includes(uname);
+      let isLiked = json.articleLikes.includes(username);
+      // console.log(uname);
+
       return { isLiked, num: json.articleLikes.length };
     } else {
       setArticleLikes([]);
@@ -132,8 +137,10 @@ const ArticleState = (props) => {
       body: JSON.stringify({ articleId, uname }),
     });
     const json = await response.json();
+    const username = await getUser();
+
     // console.log("JSON ", json);
-    let isLiked = json.articleLikes.includes(uname);
+    let isLiked = json.articleLikes.includes(username);
 
     if (json.success) {
       setArticleLikes(json.articleLikes);

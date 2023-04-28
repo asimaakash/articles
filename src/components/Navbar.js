@@ -28,7 +28,7 @@ export default function Navbar() {
       <nav className="navbar navbar-dark  bg-dark">
         <div className="container-fluid">
           <div className="navbar-brand navText mx-4" onClick={toHome}>
-            myArticle
+            contentManagementSystem
           </div>
           <div className="dropdown mx-5 my-3 ml-5">
             <button
